@@ -14,7 +14,7 @@ def predicting(model, device, loader):
     model.eval()
     total_preds = torch.Tensor()
     total_labels = torch.Tensor()
-    print('Make prediction for {} samples...'.format(len(loader.dataset)))
+    print(f'Make prediction for {len(loader.dataset)} samples...')
     with torch.no_grad():
         for data in loader:
             data = data.to(device)

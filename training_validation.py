@@ -12,7 +12,7 @@ from utils import *
 
 # training function at each epoch
 def train(model, device, train_loader, optimizer, epoch):
-    print('Training on {} samples...'.format(len(train_loader.dataset)))
+    print(f'Training on {len(train_loader.dataset)} samples...')
     model.train()
     for batch_idx, data in enumerate(train_loader):
         data = data.to(device)
@@ -32,7 +32,7 @@ def predicting(model, device, loader):
     model.eval()
     total_preds = torch.Tensor()
     total_labels = torch.Tensor()
-    print('Make prediction for {} samples...'.format(len(loader.dataset)))
+    print(f'Make prediction for {len(loader.dataset)} samples...')
     with torch.no_grad():
         for data in loader:
             data = data.to(device)

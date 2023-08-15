@@ -16,12 +16,14 @@ class TestbedDataset(InMemoryDataset):
         # benchmark dataset, default = 'davis'
         self.dataset = dataset
         if os.path.isfile(self.processed_paths[0]):
-            print('Pre-processed data found: {}, loading ...'.format(self.processed_paths[0]))
-            self.data, self.slices = torch.load(self.processed_paths[0])
+            print(f'Pre-processed data found: {self.processed_paths[0]}, loading ...')
         else:
-            print('Pre-processed data {} not found, doing pre-processing...'.format(self.processed_paths[0]))
+            print(
+                f'Pre-processed data {self.processed_paths[0]} not found, doing pre-processing...'
+            )
             self.process(xd, xt, y,smile_graph)
-            self.data, self.slices = torch.load(self.processed_paths[0])
+
+        self.data, self.slices = torch.load(self.processed_paths[0])
 
     @property
     def raw_file_names(self):
@@ -30,7 +32,7 @@ class TestbedDataset(InMemoryDataset):
 
     @property
     def processed_file_names(self):
-        return [self.dataset + '.pt']
+        return [f'{self.dataset}.pt']
 
     def download(self):
         # Download to `self.raw_dir`.
@@ -49,11 +51,11 @@ class TestbedDataset(InMemoryDataset):
     # Y: list of labels (i.e. affinity)
     # Return: PyTorch-Geometric format processed data
     def process(self, xd, xt, y,smile_graph):
-        assert (len(xd) == len(xt) and len(xt) == len(y)), "The three lists must be the same length!"
+        assert len(xd) == len(xt) == len(y), "The three lists must be the same length!"
         data_list = []
         data_len = len(xd)
         for i in range(data_len):
-            print('Converting SMILES to graph: {}/{}'.format(i+1, data_len))
+            print(f'Converting SMILES to graph: {i + 1}/{data_len}')
             smiles = xd[i]
             target = xt[i]
             labels = y[i]
@@ -79,17 +81,13 @@ class TestbedDataset(InMemoryDataset):
         torch.save((data, slices), self.processed_paths[0])
 
 def rmse(y,f):
-    rmse = sqrt(((y - f)**2).mean(axis=0))
-    return rmse
+    return sqrt(((y - f)**2).mean(axis=0))
 def mse(y,f):
-    mse = ((y - f)**2).mean(axis=0)
-    return mse
+    return ((y - f)**2).mean(axis=0)
 def pearson(y,f):
-    rp = np.corrcoef(y, f)[0,1]
-    return rp
+    return np.corrcoef(y, f)[0,1]
 def spearman(y,f):
-    rs = stats.spearmanr(y, f)[0]
-    return rs
+    return stats.spearmanr(y, f)[0]
 def ci(y,f):
     ind = np.argsort(y)
     y = y[ind]
@@ -110,5 +108,4 @@ def ci(y,f):
             j = j - 1
         i = i - 1
         j = i-1
-    ci = S/z
-    return ci
+    return S/z
